@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="user-scalable=0" />
+    <!--阻止双击放大页面-->
+    <title>日租首页</title>
+</head>
+<link rel="stylesheet" href="../css/bootstrap.min.css" />
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/longrentpage.css" />
+<!--长租首页css样式-->
+<link rel="stylesheet" href="../css/range/jquery.range.css" />
+<!--价格选择条-->
+<link rel="stylesheet" href="../css/dailyrentpage.css" />
+<link rel="stylesheet" href="../css/sly/normalize.css" />
+<!--宜居人数-->
+<link rel="stylesheet" href="../css/sly/font-awesome.css">
+<!--宜居人数-->
+<link rel="stylesheet" href="../css/sly/ospb.css">
+<!--宜居人数-->
+<link rel="stylesheet" href="../css/sly/horizontal.css" />
+<!--宜居人数-->
+<link rel="stylesheet" href="../css/calendar/calendar.css" />
+<link rel="stylesheet" href="../node_modules\vue-swipe\dist\vue-swipe.css" charset="utf-8">
+<link rel="stylesheet" href="../css/swipe.css">
+<!--入住时段-->
+<script type="text/javascript" src="../js/sly/modernizr.js"></script>
+<!--宜居人数-->
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<!-- <script type="text/javascript" src="../js/xSlider.js"></script> -->
+<!--轮播-->
+<script src="../node_modules\vue-swipe\dist\vue-swipe.js"></script>
+<script type="text/javascript" src="../js/vue/vue.js"></script>
+<script type="text/javascript" src="../js/vue/vue-resource.js"></script>
+<script type="text/javascript" src="../js/range/jquery.range.js"></script>
+<!--价格选择条-->
+<script type="text/javascript" src="../js/calendar/date.js"></script>
+<!--入住时段-->
+
+<body class="body">
+    <div class="row" style="margin: 0px;" id="app">
+        <div class="col-xs-12 homepage-top ">
+            <div class="col-xs-6">
+                <div class="hp-top-left">
+                    <img src="../img/waplogo.png" />
+                </div>
+            </div>
+            <div class="col-xs-6 hp-top-right">
+                <button>立即打开</button>
+                <span>
+                    <img src="../img/delete.png" />
+                </span>
+            </div>
+        </div>
+        <div class="col-xs-12" style="margin-top: 120px;">
+            <div class="col-xs-4">
+
+            </div>
+            <div class="col-xs-4 navigation-center">
+                <img src="../img/homelogo.png" />
+            </div>
+            <div class="col-xs-4 navigation-right">
+                <a href="../searchpage.html">
+                    <img src="../img/search.png" />
+                </a>
+            </div>
+        </div>
+        <swipe class="my-swipe" v-bind:speed="800">
+            <swipe-item class="slide1" v-for="imgItem in imgList">
+                <img v-bind:src="imgItem.imgUrl" alt="" @click="imgclick(imgItem)">
+            </swipe-item>
+        </swipe>
+        <div class="col-xs-12 options drpage-options">
+            <div>
+                <div class="col-xs-4" v-for="columnItem in columnlist" @click="test1(columnItem)">
+                    <span class="options-span">
+                        <img v-bind:src="columnItem.imgUrl" />
+                    </span>
+                    <span>{{columnItem.title}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 screening" id="float">
+            <div class="col-xs-3" id="dailyFadein">
+                <span class="btnFadeinspan">
+                    <p>位置区域</p>
+                </span>
+            </div>
+            <div class="col-xs-3 select-time" id="dailycalendar">
+                <span class="btnFadeinspan">
+                    <p>入住时段 </p>
+                </span>
+            </div>
+            <div class="col-xs-3" id="dailymore">
+                <span class="btnFadeinspan">
+                    <p>更多筛选 </p>
+                </span>
+            </div>
+            <div class="col-xs-3" id="dailyrecommend">
+                <span class="btnFadeinspan">
+                    <p>推荐排序</p>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin: 0px;" id="app1">
+        <div class="nextPage" @click="clickNextPage"></div>
+        <div v-for="resultItem in resultlist" @click="test(resultItem)">
+            <div class="col-xs-12 dailylist">
+                <!--<img src="../img/soutu.png"width="100%" height="100%">-->
+                <img v-bind:src="resultItem.houseImgUrl" width="100%" />
+                <span class="collect">
+                    <img src="../img/Cancelcollect.png" />
+                </span>
+                <span class="collect-prices">¥
+                    <span style="font-size: 55px;">{{resultItem.prices}}</span>/晚</span>
+            </div>
+            <div class="col-xs-12">
+                <span v-if="resultItem.imgUrl!=''" class="cl-headportrait">
+                    <img v-bind:src="resultItem.imgUrl">
+                </span>
+                <span v-if="resultItem.imgUrl==''" class="cl-headportrait">
+                    <img src="../img/headportrait.png">
+                </span>
+            </div>
+            <div class="col-xs-12 dailylist1">
+                <span class="dailylist-title">{{resultItem.title}}</span>
+                <span class="dailylist-house">
+                    <span v-if="resultItem.houseRent==1">民宿套房 |</span>
+                    <span v-if="resultItem.roomRent==1">人民单间 |</span>
+                    <span v-if="resultItem.bedRental==1">青年床位 |</span>
+                    {{resultItem.room}}室{{resultItem.hall}}厅{{resultItem.toilet}}卫 | 宜居{{resultItem.personNumber}}人 | {{resultItem.centiare}}m²</span>
+                <span class="dailylist-tags">{{resultItem.tags.replace(/,/g, " | ")}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12" id="divD">
+        <div class="adr-filtrate">
+            <div class="col-xs-12" id="near">
+                <span>
+                    <img src="../img/quyu6.png" />
+                </span>
+                <span>我的附近</span>
+            </div>
+        </div>
+        <div class="col-xs-12 cancel">
+            <span class="cancel_btn" id="cancel_btn">取消</span>
+            <span class="confirm_btn">确认</span>
+        </div>
+    </div>
+    <!--入住时段-->
+    <div class="col-xs-12" id="div_calendar">
+        <div class="adr-filtrate dailycalendar">
+            <div id="firstSelect" style="padding: 0px;"></div>
+            <input type="hidden" id="startDate" />
+            <input type="hidden" id="endDate" />
+            <div class="calendar"></div>
+            <div class="col-xs-12 cancel">
+                <span class="cancel_btn" id="calendar_btn">取消</span>
+                <span class="confirm_btn" id="calendar_confirm">确认</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12" id="div_btnmore" style="display: block;opacity: 0;">
+        <div class="adr-filtrate adr-dailymore">
+            <div class="col-xs-12 " style="padding: 20px;">
+                <span>价格</span>
+            </div>
+            <div class="col-xs-12" style="padding: 60px 0px;">
+                <input class="range-slider" type="hidden" value="0,3000" />
+            </div>
+            <div class="col-xs-12 " style="padding: 20px;">
+                <span>出租类型</span>
+            </div>
+            <div class="col-xs-12 leasetype">
+                <div class="col-xs-6">
+                    <span class="minsu"></span>
+                    <span class="leasetype_span">民宿套房</span>
+                </div>
+                <div class="col-xs-6">
+                    <span class="danjian"></span>
+                    <span class="leasetype_span">人民单间</span>
+                </div>
+                <div class="col-xs-6">
+                    <span class="chuangwei"></span>
+                    <span class="leasetype_span">青年床位</span>
+                </div>
+            </div>
+            <div class="col-xs-12 " style="padding: 20px;">
+                <span>预订类</span>
+            </div>
+            <div class="col-xs-12 ordertype">
+                <div class="col-xs-6">
+                    <span class="order_quick"></span>
+                    <span class="ordertype_span">立即预订</span>
+                </div>
+                <div class="col-xs-6">
+                    <span class="order_normal"></span>
+                    <span class="ordertype_span">申请预订</span>
+                </div>
+            </div>
+
+            <div class="col-xs-12" style="padding: 20px;">
+                <span>户型</span>
+            </div>
+            <div class="col-xs-12">
+                <span class="familytype_span">
+                    <span class="roomvalue">一居</span>
+                </span>
+                <span class="familytype_span">
+                    <span class="roomvalue">二居</span>
+                </span>
+                <span class="familytype_span">
+                    <span class="roomvalue">三居</span>
+                </span>
+                <span class="familytype_span">
+                    <span class="roomvalue">四居</span>
+                </span>
+                <span class="familytype_span">
+                    <span class="roomvalue">不限</span>
+                </span>
+            </div>
+            <div class="col-xs-12" style="padding: 20px;">
+                <span>宜居人数</span>
+            </div>
+            <div class="col-xs-12">
+                <div class="pagespan container">
+                    <div class="wrap">
+                        <div class="frame" id="forcecentered">
+                            <ul class="clearfix">
+                                <li>1人</li>
+                                <li>2人</li>
+                                <li>3人</li>
+                                <li>4人</li>
+                                <li>5人</li>
+                                <li>6人</li>
+                                <li>7人</li>
+                                <li>8人</li>
+                                <li>9人</li>
+                                <li>10人</li>
+                                <li>10人+</li>
+                                <li>不限</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="pagespan_line"></span>
+                </div>
+            </div>
+            <!-- <div class="col-xs-12" style="padding: 20px;">
+                <span>特色标签</span>
+            </div>
+            <div class="col-xs-12" style="padding: 0px 30px;" id="applabel">
+                <span v-for="(labelItem, index) in labellist">
+                    <span @click="labelspan(labelItem, index)" :class="{'label_span': true,">{{labelItem.content}}</span>
+                </span>
+            </div> -->
+            <div class="col-xs-12" style="padding: 20px;">
+                <span>设施</span>
+            </div>
+            <div class="col-xs-12" id="appfacilities">
+                <span class="facilities_span" v-for="(facilitiesItem, i) in facilitieslist" @click="textfacilities(facilitiesItem, i)">
+                    <span class="facilities">
+                        <img :src="icons[i]?facilitiesItem.grayIcon: facilitiesItem.redIcon" style="margin: 0px;" />
+                    </span>
+                    <span class="leasetype_span" :class="{colorRed:!icons[i]}">{{facilitiesItem.amenityName}}</span>
+                </span>
+            </div>
+        </div>
+        <div class="col-xs-12 cancel">
+            <span class="cancel_btn" id="btnmore_btn">取消</span>
+            <span class="confirm_btn" id="confirm_btn">确认</span>
+        </div>
+    </div>
+    <div class="col-xs-12" id="div_recommend">
+        <div class="adr-filtrate dailyrecommend">
+            <div class="col-xs-12 recommend_div confirm">
+                <span>推荐排序</span>
+            </div>
+            <div class="col-xs-12 recommend_div">
+                <span>租金从高到低</span>
+            </div>
+            <div class="col-xs-12 recommend_div">
+                <span>租金从低到高</span>
+            </div>
+        </div>
+        <div class="col-xs-12 cancel">
+            <span class="cancel_btn" id="recommend_btn">取消</span>
+            <span class="confirm_btn">确认</span>
+        </div>
+    </div>
+    <script type="text/javascript" src="../js/sly/plugins.js"></script>
+    <!--宜居人数-->
+    <script type="text/javascript" src="../js/sly/sly.min.js"></script>
+    <!--宜居人数-->
+    <script type="text/javascript" src="../js/sly/horizontal.js"></script>
+    <!--宜居人数-->
+
+    <script>
+        $(function () {
+            $('#firstSelect').calendarSwitch({
+                selectors: {
+                    sections: ".calendar"
+                },
+                index: 4,      //展示的月份个数
+                animateFunction: "toggle",        //动画效果
+                controlDay: false,//知否控制在daysnumber天之内，这个数值的设置前提是总显示天数大于90天
+                daysnumber: "90",     //控制天数
+                comeColor: "#66CCFF",       //入住颜色
+                outColor: "#FF0033",      //离店颜色
+                comeoutColor: "#FFCCCC",        //入住和离店之间的颜色
+                callback: function () {
+                    // console.log("callback")
+                },   //回调函数
+                comfireBtn: '.comfire'//确定按钮的class或者id
+            });
+            var b = new Date();
+            //b.setDate(a.getDate()+1)
+            var ye = b.getFullYear();
+            var mo = b.getMonth() + 1;
+            var da = b.getDate();
+            $('#startDate').val(ye + '-' + mo + '-' + da);
+            b = new Date(b.getTime() + 24 * 3600 * 1000);
+            var ye = b.getFullYear();
+            var mo = b.getMonth() + 1;
+            var da = b.getDate();
+            $('#endDate').val(ye + '-' + mo + '-' + da);
+        });
+    </script>
+    <script type="text/javascript"> 
+        //	价格选择条
+        $(function () {
+            $('.range-slider').jRange({
+                from: 0,
+                to: 3000,
+                step: 1,
+                //				scale: [0,25,50,75,100],
+                format: '%s',
+                width: 700,
+                showLabels: true,
+                isRange: true
+            });
+            setTimeout(function () {
+                $("#div_btnmore").css("opacity", "1");
+                $("#div_btnmore").css("display", "none");
+            }, 1000);
+        });
+        //			json文件读取（POI.json）
+        var areadata = {
+            province: [],
+            city: [],
+            district: []
+        }
+        initAreaData();
+        function initAreaData() {
+            var dataroot = "../POI.json";
+            $.getJSON(dataroot, function (data1) {
+                areadata.province = data1.poi;
+                // console.log(areadata.province.length)
+                for (var i = 0; i < areadata.province.length; i++) {
+                    $("#divD").append('<div class="adr-filtrate divD_div' + i + '">' +
+                        '<div class="col-xs-12 divD_title "><span><img src="../img/quyu' + i + '.png"/></span><span>' + areadata.province[i].name + '</span></div></div>')
+
+                    for (var j = 0; j < areadata.province[i].result.length; j++) {
+                        $('.divD_div' + i + '').append('<div class="col-xs-12 divD_details"><span>' + areadata.province[i].result[j].name + '</span></div>')
+                    }
+                }
+                $(".divD_details").click(function () {
+                    var index = $(this).parent().index() - 2;
+                    var index1 = $(this).index() - 1;
+                    if (index == 0) {
+                        Fadein();
+                        data['areaId'] = areadata.province[index].result[index1].areaId;
+                        data['lng'] = '';
+                        data['lat'] = '';
+                        // console.log(data)
+                        $.ajax({
+                            type: "POST",
+                            url: "https://apis.zhudd.com/v3/house/getHouseList",
+                            data: data,
+                            dataType: "json",
+                            success: function (data) {
+                                demo1.resultlist = '';
+                                demo1.resultlist = data.result;
+                            }
+                        });
+                    } else {
+                        Fadein();
+                        data['areaId'] = '';
+                        data['lng'] = areadata.province[index].result[index1].log;
+                        data['lat'] = areadata.province[index].result[index1].lat;
+                        // console.log(data)
+                        $.ajax({
+                            type: "POST",
+                            url: "https://apis.zhudd.com/v3/house/getHouseList",
+                            data: data,
+                            dataType: "json",
+                            success: function (data) {
+                                demo1.resultlist = '';
+                                demo1.resultlist = data.result;
+                            }
+                        });
+                    }
+                    $("#dailyFadein").children().children().html($(this).children().html())
+                });
+
+                $('.divD_title').on('click', function () {
+                    var dis = $(this).siblings().css('display');
+                    if (dis == 'none') {
+                        $(this).siblings().show();
+                        $(this).addClass("divD_img");
+                    } else {
+                        $(this).siblings().hide();
+                        $(this).removeClass("divD_img");
+                    }
+                });
+            });
+            //搜索我的附近房源
+            $("#near").click(function () {
+                Fadein();
+                data['areaId'] = '';
+                data['lng'] = localStorage.getItem("getLng");
+                data['lat'] = localStorage.getItem("getLat");
+                // console.log(data)
+                $.ajax({
+                    type: "POST",
+                    url: "https://apis.zhudd.com/v3/house/getHouseList",
+                    data: data,
+                    dataType: "json",
+                    success: function (data) {
+                        demo1.resultlist = '';
+                        demo1.resultlist = data.result;
+                    }
+                });
+                $("#dailyFadein").children().children().html($(this).children("span:last-child").html());
+            });
+        }
+
+        $(document).ready(function () {
+            $("#dailyFadein").bind("click", Fadein); //为btnFadein绑定click事件
+            $("#dailymore").bind('click', dailymore);
+            $("#dailyrecommend").bind('click', dailyrecommend);
+            $("#dailycalendar").bind('click', dailycalendar);
+            $('#cancel_btn').bind("click", Fadeout);
+            $('#btnmore_btn').bind("click", btnmorebtn);
+            $('#recommend_btn').bind("click", recommendbtn);
+            $('#calendar_btn').bind("click", calendarbtn);
+            //				日租出租类型的筛选
+            $(".leasetype .minsu").on('click', function () {
+                $('.minsu').addClass("minsus");
+                $('.minsu').addClass("houseactive");
+                $('.danjian').removeClass("danjians");
+                $('.danjian').removeClass("houseactive");
+                $('.chuangwei').removeClass("chuangweis");
+                $('.chuangwei').removeClass("houseactive");
+            })
+            $(".leasetype .danjian").on('click', function () {
+                $('.minsu').removeClass("minsus");
+                $('.minsu').removeClass("houseactive");
+                $('.danjian').addClass("danjians");
+                $('.danjian').addClass("houseactive");
+                $('.chuangwei').removeClass("chuangweis");
+                $('.chuangwei').removeClass("houseactive");
+            })
+            $(".leasetype .chuangwei").on('click', function () {
+                $('.minsu').removeClass("minsus");
+                $('.minsu').removeClass("houseactive");
+                $('.danjian').removeClass("danjians");
+                $('.danjian').removeClass("houseactive");
+                $('.chuangwei').addClass("chuangweis");
+                $('.chuangwei').addClass("houseactive");
+            })
+            //              预定类型筛选
+            $(".ordertype .order_quick").on('click', function () {
+                $('.order_quick').addClass("order_quicks");
+                $(".order_quick").addClass("orderactive")
+                $('.order_normal').removeClass("order_normals");
+                $('.order_normal').removeClass("orderactive");
+            })
+            $(".ordertype .order_normal").on('click', function () {
+                $('.order_quick').removeClass("order_quicks");
+                $('.order_normal').addClass("order_normals");
+                $('.order_normal').addClass("orderactive");
+                $('.order_quick').removeClass("orderactive");
+            })
+            //				居室
+            $(".roomvalue").on('click', function () {
+                $(this).addClass("roomactive");
+                $(this).parent().siblings().children().removeClass("roomactive");
+            })
+            //				更多筛选的确认按钮
+            $("#confirm_btn").on('click', function () {
+                var aa = $(".range-slider").val().split(',');
+                var minvalue = aa[0];//筛选的最小价格
+                var maxvalue = aa[1];//筛选的最大价格
+                var housetype = $('.houseactive').next().text();//房源类型的值（整租==合租）
+                var bedroom = $('.roomactive').parent().index() + 1;//筛选得到的居室
+                var peoplenum = $(".clearfix .active").index() + 1;//筛选得到的宜居人数
+                var orderType = $(".orderactive").next().text()
+                // var speciallabel = demolabel.selectId.join(",");//筛选得到的特色标签
+                var fac_content = demofacilities.facilities.join(",");//筛选得到的设施
+                // console.log(demolabel.selectId)
+                // console.log(demofacilities.facilities)
+                data['priceLow'] = minvalue;
+                data['priceLowHigh'] = maxvalue;
+                data.page = "1"
+                if (housetype == "民宿套房") {
+                    data.houseRent = 1
+                    data.roomRent = ""
+                    data.bedRental = ""
+                } else if (housetype == "人民单间") {
+                    data.houseRent = ""
+                    data.roomRent = 1
+                    data.bedRental = ""
+                } else if (housetype == "青年床位") {
+                    data.houseRent = ""
+                    data.roomRent = ""
+                    data.bedRental = 1
+                }
+                if (bedroom === 5) {
+                    data['room'] = ""
+                } else {
+                    data['room'] = bedroom;
+                }
+                if (orderType === "申请预定") {
+                    data.booking = "0"
+                } else if (orderType === "立即预定") {
+                    data.booking = "1"
+                } else {
+                    data.booking = ""
+                }
+                if (peoplenum != 12) {
+                    data['personNumber'] = peoplenum;
+                } else {
+                    data.personNumber = ""
+                }
+                // data['tags'] = speciallabel;
+                data['amenityId'] = fac_content;
+                // console.log(data)
+                $.ajax({
+                    type: "POST",
+                    url: "https://apis.zhudd.com/v3/house/getHouseList",
+                    data: data,
+                    dataType: "json",
+                    success: function (data) {
+                        demo1.resultlist = '';
+                        demo1.resultlist = data.result;
+                    }
+                });
+                btnmorebtn();
+            })
+            //入住时段的确认按钮
+            $("#calendar_confirm").on('click', function () {
+                var startDate = $("#startDate").val();
+                var endDate = $("#endDate").val();
+                date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+                date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+                data['check_in_time'] = date1.getTime();//入住时间
+                data['check_out_time'] = date2.getTime();//结束时间
+                // console.log(data);
+                dailycalendar();
+                $.ajax({
+                    type: "POST",
+                    url: "https://apis.zhudd.com/v3/house/getHouseList",
+                    data: data,
+                    dataType: "json",
+                    success: function (data) {
+                        demo1.resultlist = '';
+                        demo1.resultlist = data.result;
+                    }
+                });
+            })
+            //				推荐排序
+            $('.recommend_div').on('click', function () {
+                var pricesindex = $(this).index()
+                $(this).addClass("confirm");
+                $(this).siblings().removeClass("confirm");
+                data.page = "1"
+                if (pricesindex == 1) {
+                    //						alert(1)
+                    data['prices'] = 1;
+                    // console.log(data);
+                    dailyrecommend();
+                    $.ajax({
+                        type: "POST",
+                        url: "https://apis.zhudd.com/v3/house/getHouseList",
+                        data: data,
+                        dataType: "json",
+                        success: function (data) {
+                            demo1.resultlist = '';
+                            demo1.resultlist = data.result;
+                        }
+                    });
+                } else if (pricesindex == 2) {
+                    dailyrecommend();
+                    data['prices'] = 2;
+                    // console.log(data);
+                    $.ajax({
+                        type: "POST",
+                        url: "https://apis.zhudd.com/v3/house/getHouseList",
+                        data: data,
+                        dataType: "json",
+                        success: function (data) {
+                            demo1.resultlist = '';
+                            demo1.resultlist = data.result;
+                        }
+                    });
+                } else {
+                    dailyrecommend();
+                    data['prices'] = '';
+                    // console.log(data);
+                    $.ajax({
+                        type: "POST",
+                        url: "https://apis.zhudd.com/v3/house/getHouseList",
+                        data: data,
+                        dataType: "json",
+                        success: function (data) {
+                            demo1.resultlist = '';
+                            demo1.resultlist = data.result;
+                        }
+                    });
+                }
+                $("#dailyrecommend").children().children().html($(this).children().html())
+            })
+        });
+
+        function Fadein() {
+            $("#div_recommend").hide();
+            $("#div_btnmore").hide();
+            $("#div_calendar").hide();
+            $("#dailymore").children().removeClass("dailyFadein_span");
+            $("#dailyrecommend").children().removeClass("dailyFadein_span");
+            $("#dailycalendar").children().removeClass("dailyFadein_span");
+            var divD = $("#divD").css('display')
+            if (divD == 'none') {
+                $("#divD").slideDown("slow"); //滑入 
+                $(".body").css("overflow-y", "hidden");
+                $("#dailyFadein").children().addClass("dailyFadein_span");
+            } else {
+                $("#divD").slideUp("slow"); //滑出 
+                $(".body").css("overflow-y", "scroll");
+                $("#dailyFadein").children().removeClass("dailyFadein_span");
+            }
+
+        }
+        function dailymore() {
+            $("#divD").hide();
+            $("#div_recommend").hide();
+            $("#div_calendar").hide();
+            $("#dailyFadein").children().removeClass("dailyFadein_span");
+            $("#dailyrecommend").children().removeClass("dailyFadein_span");
+            $("#dailycalendar").children().removeClass("dailyFadein_span");
+            var divbtnmore = $("#div_btnmore").css('display')
+            if (divbtnmore == 'none') {
+                $("#div_btnmore").slideDown("slow"); //滑入 
+                $(".body").css("overflow-y", "hidden");
+                $(this).children().addClass("dailyFadein_span");
+            } else {
+                $("#div_btnmore").slideUp("slow"); //滑出 
+                $(".body").css("overflow-y", "scroll");
+                $(this).children().removeClass("dailyFadein_span");
+            }
+
+        }
+        function dailyrecommend() {
+            $("#divD").hide();
+            $("#div_btnmore").hide();
+            //				$("#div_calendar").hide();
+            $("#dailyFadein").children().removeClass("dailyFadein_span");
+            $("#dailymore").children().removeClass("dailyFadein_span");
+            //				$("#dailycalendar").children().removeClass("dailyFadein_span");
+            var divrecommend = $("#div_recommend").css('display')
+            if (divrecommend == 'none') {
+                $("#div_recommend").slideDown("slow"); //滑入 
+                $(".body").css("overflow-y", "hidden");
+                $("#dailyrecommend").children().addClass("dailyFadein_span");
+            } else {
+                $("#div_recommend").slideUp("slow"); //滑出 
+                $(".body").css("overflow-y", "scroll");
+                $("#dailyrecommend").children().removeClass("dailyFadein_span");
+            }
+
+        }
+        //入住时段滑出的日历
+        function dailycalendar() {
+            $("#divD").hide();
+            $("#div_btnmore").hide();
+            $("#div_recommend").hide();
+            $("#dailyFadein").children().removeClass("dailyFadein_span");
+            $("#dailymore").children().removeClass("dailyFadein_span");
+            $("#dailyrecommend").children().removeClass("dailyFadein_span");
+            var divrecommend = $("#div_calendar").css('display')
+            if (divrecommend == 'none') {
+                $("#div_calendar").slideDown("slow"); //滑入 
+                $(".body").css("overflow-y", "hidden");
+                $("#dailycalendar").children().addClass("dailyFadein_span");
+            } else {
+                $("#div_calendar").slideUp("slow"); //滑出 
+                $(".body").css("overflow-y", "scroll");
+                $("#dailycalendar").children().removeClass("dailyFadein_span");
+            }
+
+        }
+        function Fadeout() {
+            $("#divD").slideUp("slow"); //滑出 
+            $(".body").css("overflow-y", "scroll")
+            $("#dailyFadein").children().removeClass("dailyFadein_span");
+        }
+        function btnmorebtn() {
+            $("#div_btnmore").slideUp("slow"); //滑出 
+            $(".body").css("overflow-y", "scroll")
+            $("#dailymore").children().removeClass("dailyFadein_span");
+        }
+        function recommendbtn() {
+            $("#div_recommend").slideUp("slow"); //滑出 
+            $(".body").css("overflow-y", "scroll")
+            $("#dailyrecommend").children().removeClass("dailyFadein_span");
+        }
+        function calendarbtn() {
+            $("#div_calendar").slideUp("slow"); //滑出 
+            $(".body").css("overflow-y", "scroll")
+            $("#dailycalendar").children().removeClass("dailyFadein_span");
+        }
+        var data = {
+            cityId: '500100',
+            source: 'web',
+            houseType: '2',
+            page: "1"
+        };
+
+        var vueSwipe = VueSwipe.Swipe;
+        var vueSwipeItem = VueSwipe.SwipeItem  //引入轮播插件
+        var demo = new Vue({
+            el: '#app',
+            data: {
+                imgList: [],
+                columnlist: [],
+                url: 'https://apis.zhudd.com/v3/house/getColumn'
+            },
+            created: function () {
+                this.getImg();//定义方法
+            },
+            methods: {
+                getImg: function () {
+                    var that = this;
+                    that.$http.jsonp({           //调用接口
+                        data: data,
+                        method: 'POST',
+                        url: this.url,  //this指data
+                        emulateJSON: true,
+                    }).then(function (response) {  //接口返回数据
+                        carouseldata = response.data.result.carousel;
+                        columndata = response.data.result.column;
+                        console.log(carouseldata)
+                        demo.imgList = carouseldata;
+                        demo.columnlist = columndata;
+                        // console.log(JSON.stringify(carouseldata))
+                        $(".homepage-top").next().css("margin-top", 120)
+                        $(".homepage-top .hp-top-right span").on("click", function () {
+                            $(".homepage-top").css("display", "none")
+                            $(".homepage-top").next().css("margin-top", 0)
+                            $("#float").css("top", 0)
+                        })
+                    }, function (error) {
+                    })
+                },
+                imgclick: function (imgItem) {
+                    var imgvalue = imgItem.houseMasterId;
+                    location.href = 'dailyhousinglist.html?' + 'houseMasterId=' + imgvalue
+                },
+                test1: function (columnItem) {
+                    if (columnItem.imgHref != "") {
+                        location.href = 'dailyhousinglist.html?' +
+                            encodeURI(columnItem.imgHref) + "=" + (columnItem.hrefType)
+                        // url中添加post请求体
+                    } else if (columnItem.title === "月租房") {
+                        location.href = '../Longrent/longhousinglist.html'
+                    } else {
+                        location.href = 'dailyhousinglist.html'
+                    }
+                }
+            },
+            components: {
+                'swipe': vueSwipe,
+                'swipe-item': vueSwipeItem
+            }
+        })
+        var demo1 = new Vue({
+            el: '#app1',
+            data: {
+                resultlist: [],
+                url: 'https://apis.zhudd.com/v3/house/getHouseList'
+            },
+            created: function () {
+                this.getlist();//定义方法
+            },
+            methods: {
+                getlist: function () {
+                    var that = this;
+                    that.$http.jsonp({           //调用接口
+                        data: data,
+                        method: 'POST',
+                        url: this.url,  //this指data
+                        emulateJSON: true,
+                    }).then(function (response) {  //接口返回数据
+                        resultlist = response.data.result;
+                        demo1.resultlist = resultlist;
+                        // console.log(JSON.stringify(resultlist));
+                        $(window).on("scroll", function () {    //给window绑定scroll触底事件
+                            if ($(window).scrollTop() + $(window).height() + 1 >= $(document).height()) {
+                                $(".nextPage").trigger("click")
+                                console.log("ok")
+                            }
+                        })
+                    }, function (error) {
+                    })
+                },
+                clickNextPage: function () {    //给隐藏div绑定click事件
+                    var _this = this
+                    _this.$http.jsonp({ //调用接口
+                        data: data,
+                        method: 'POST',
+                        url: _this.url,
+                        emulateJSON: true,
+                    }).then(function (res) { //接口返回数据
+                        var curList = res.data.result
+                        if (_this.resultlist) {
+                            _this.resultlist = _this.resultlist.concat(curList)
+                            data.page++
+                            console.log("bad")
+                        }
+                    })
+                },
+                test: function (resultItem) {
+                    console.log(resultItem.houseId);
+                    location.href = 'dailyparticulars.html?' + 'houseId=' + encodeURI(resultItem.houseId) + '&lng=' + encodeURI(resultItem.lng) + '&lat=' + encodeURI(resultItem.lat)
+                }
+            }
+
+        })
+        //获取特色标签
+        var datalabel = { source: 'web' };
+        // var demolabel = new Vue({
+        //     el: '#applabel',
+        //     data: {
+        //         labellist: [],
+        //         selectId: [],
+        //         items: [],
+        //         url: 'https://apis.zhudd.com/v3/home/getTags'
+        //     },
+        //     created: function () {
+        //         this.getlist(); //定义方法
+        //     },
+        //     methods: {
+        //         getlist: function () {
+        //             var that = this;
+        //             that.$http.jsonp({ //调用接口
+        //                 data: datalabel,
+        //                 method: 'POST',
+        //                 url: this.url, //this指data
+        //                 emulateJSON: true,
+        //             }).then(function (response) { //接口返回数据
+        //                 labellist = response.data.result;
+        //                 demolabel.labellist = labellist;
+        //                 demolabel.labellist.forEach(function(item){
+        //                     this.items.push({ isSelect: false });
+        //                 });
+        //                 //							console.log(JSON.stringify(labellist))
+        //             }, function (error) { })
+        //         },
+        //         labelspan: function(labelItem, i) {
+        //             // this.items[i].isSelect = !this.items[i].isSelect;
+        //             var index = this.selectId.indexOf(labelItem.content);
+        //             if (index == -1) {
+        //                 this.selectId.push(labelItem.content);
+        //             }
+        //             if (index >= 0) {
+        //                 this.selectId.splice(index, 1);
+        //             }
+        //         }
+        //     }
+        // });
+        //获取设施
+        var datafacilities = { source: 'web', houseType: 2 };
+        var demofacilities = new Vue({
+            el: '#appfacilities',
+            data: {
+                facilitieslist: [],
+                facilities: [],
+                icons: [],
+                url: 'https://apis.zhudd.com/v3/home/getAmenity'
+            },
+            created: function () {
+                this.getlist(); //定义方法
+            },
+            methods: {
+                getlist: function () {
+                    var that = this;
+                    that.$http.jsonp({ //调用接口
+                        data: datafacilities,
+                        method: 'POST',
+                        url: this.url, //this指data
+                        emulateJSON: true,
+                    }).then(function (response) { //接口返回数据
+                        facilitieslist = response.data.result;
+                        demofacilities.facilitieslist = facilitieslist;
+                        demofacilities.facilitieslist.forEach(function (item) {
+                            demofacilities.icons.push(true);
+                        })
+                        // console.log(JSON.stringify(facilitieslist))
+                    }, function (error) { })
+                },
+                textfacilities: function (facilitiesItem, i) {
+                    this.icons.splice(i, 1, !this.icons[i]);
+                    var index = this.facilities.indexOf(facilitiesItem.amenityId);
+                    if (index == -1) {
+                        this.facilities.push(facilitiesItem.amenityId);
+                    }
+                    if (index >= 0) {
+                        this.facilities.splice(index, 1);
+                    }
+                }
+            }
+        });
+        window.onload =
+            function () {
+                var divD = document.getElementById("divD");
+                var divbtnmore = document.getElementById("div_btnmore");
+                var divrecommend = document.getElementById("div_recommend");
+                var divcalendar = document.getElementById("div_calendar");
+                var oDiv = document.getElementById("float");
+                H = 0,
+                    Y = oDiv
+                while (Y) { H += Y.offsetTop; Y = Y.offsetParent }
+                window.onscroll = function () {
+                    var s = document.body.scrollTop || document.documentElement.scrollTop
+                    if (s > H + 425) {
+                        oDiv.classList.add("height-float");
+                        divD.style.paddingTop = '230px';
+                        divD.style.paddingBottom = '150px';
+                        divbtnmore.style.paddingTop = '230px';
+                        divbtnmore.style.paddingBottom = '150px';
+                        divrecommend.style.paddingTop = '230px';
+                        divrecommend.style.paddingBottom = '150px';
+                        divcalendar.style.paddingTop = '230px';
+                        // 							divcalendar.style.paddingBottom = '150px';
+                    } else {
+                        oDiv.classList.remove("height-float");
+                        divD.style.paddingTop = '130px';
+                        divbtnmore.style.paddingTop = '130px';
+                        divrecommend.style.paddingTop = '130px';
+                        divcalendar.style.paddingTop = '130px';
+                    }
+                }
+            }
+    </script>
+    <script src="../js/dailyrentpage.js"></script>
+    <script src="../js/downApp.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="user-scalable=0" />
+	<title>付款方式</title>
+	<link rel="stylesheet" href="../css/style.css" />
+	<link rel="stylesheet" href="../css/payment.css" />
+	<!--付款方式-->
+	<link rel="stylesheet" href="../css/bootstrap.min.css" />
+	<script type="text/javascript" src="../js/jquery.min.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../js/vue/vue.js"></script>
+	<script type="text/javascript" src="../js/vue/vue-resource.js"></script>
+
+</head>
+
+<body>
+	<div class="row" style="margin: 0px;" id="app">
+		<div class="col-xs-12 homepage-top ">
+			<div class="col-xs-6">
+				<div class="hp-top-left">
+					<img src="../img/waplogo.png" />
+				</div>
+			</div>
+			<div class="col-xs-6 hp-top-right">
+				<button>立即打开</button>
+				<span>
+					<img src="../img/delete.png" />
+				</span>
+			</div>
+		</div>
+		<div class="col-xs-12">
+			<span class="payment_span">
+				<img src="../img/payment.png" onclick="self.location=document.referrer;" />
+			</span>
+		</div>
+		<div class="col-xs-12">
+			<span class="payment_span">付款方式</span>
+		</div>
+		<div v-if="carouseldata.prices==0" style="display: none;">
+			<div class="col-xs-12">
+				<span class="paymonthly">月付</span>
+				<span class="paymonthly_price">{{carouseldata.prices}}元/月</span>
+			</div>
+			<div class="col-xs-12 monthly_money">
+				<span class="mon_money">押金：{{carouseldata.cashPledge}}元</span>
+				<span class="mon_service">服务费：{{carouseldata.serverPrices}}元/年</span>
+			</div>
+		</div>
+		<div v-if="carouseldata.prices!=0">
+			<div class="col-xs-12">
+				<span class="paymonthly">月付</span>
+				<span class="paymonthly_price">{{carouseldata.prices}}元/月</span>
+			</div>
+			<div class="col-xs-12 monthly_money">
+				<span class="mon_money">押金：{{carouseldata.cashPledge}}元</span>
+				<span class="mon_service">服务费：{{carouseldata.serverPrices}}元/年</span>
+			</div>
+		</div>
+		<div v-if="carouseldata.qtrPrices==0" style="display: none;">
+			<div class="col-xs-12">
+				<span class="paymonthly">季付</span>
+				<span class="paymonthly_price">{{carouseldata.qtrPrices}}元/月</span>
+			</div>
+			<div class="col-xs-12 monthly_money">
+				<span class="mon_money">押金：{{carouseldata.cashPledge}}元</span>
+				<span class="mon_service">服务费：{{carouseldata.qtrServerPrices}}元/年</span>
+			</div>
+		</div>
+		<div v-if="carouseldata.qtrPrices!=0">
+			<div class="col-xs-12">
+				<span class="paymonthly">季付</span>
+				<span class="paymonthly_price">{{carouseldata.qtrPrices}}元/月</span>
+			</div>
+			<div class="col-xs-12 monthly_money">
+				<span class="mon_money">押金：{{carouseldata.cashPledge}}元</span>
+				<span class="mon_service">服务费：{{carouseldata.qtrServerPrices}}元/年</span>
+			</div>
+		</div>
+		<div v-if="carouseldata.yearPrices==0" style="display: none;">
+			<div class="col-xs-12">
+				<span class="paymonthly">年付</span>
+				<span class="paymonthly_price">{{carouseldata.yearPrices}}元/月</span>
+			</div>
+			<div class="col-xs-12 monthly_money">
+				<span class="mon_money">押金：{{carouseldata.cashPledge}}元</span>
+				<span class="mon_service">服务费：{{carouseldata.yearServerPrices}}元/年</span>
+			</div>
+		</div>
+		<div v-if="carouseldata.yearPrices!=0">
+			<div class="col-xs-12">
+				<span class="paymonthly">年付</span>
+				<span class="paymonthly_price">{{carouseldata.yearPrices}}元/月</span>
+			</div>
+			<div class="col-xs-12 monthly_money">
+				<span class="mon_money">押金：{{carouseldata.cashPledge}}元</span>
+				<span class="mon_service">服务费：{{carouseldata.yearServerPrices}}元/年</span>
+			</div>
+		</div>
+		<div class="col-xs-12">
+			<span class="payment_share">分期通分享优惠，点击查看详情</span>
+		</div>
+		<div class="col-xs-12">
+			<span class="instruction">说明</span>
+		</div>
+		<div class="col-xs-12">
+			<span class="instruction_content">1、押金会在您办理解约前一并返还；</span>
+		</div>
+		<div class="col-xs-12">
+			<span class="instruction_content">2、解约时，为发生的租金和服务费将按日结算.</span>
+		</div>
+	</div>
+</body>
+<script>
+	function GetQueryString(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) return unescape(r[2]); return null;
+	}
+	var houseid = GetQueryString("houseId");
+	var data = {
+		houseId: houseid,
+		source: 'web',
+		lat: '0',
+		lng: '0'
+	};
+	var demo = new Vue({
+		el: '#app',
+		data: {
+			carouseldata: [],
+			url: 'https://apis.zhudd.com/v3/house/getInfo'
+		},
+		created: function () {
+			this.getImg(); //定义方法
+		},
+		methods: {
+			getImg: function () {
+				var that = this;
+				that.$http.jsonp({ //调用接口
+					data: data,
+					method: 'POST',
+					url: this.url, //this指data
+					emulateJSON: true,
+				}).then(function (response) { //接口返回数据
+					carouseldata = response.data.result;
+					demo.carouseldata = carouseldata;
+					console.log(JSON.stringify(carouseldata))
+					$(".homepage-top .hp-top-right span").on("click", function () {
+						$(".homepage-top").css("display", "none")
+						$(".homepage-top").next().css("margin-top", 0)
+					})
+				}, function (error) {
+
+				})
+			}
+		}
+	})
+</script>
+<script src="../js/downApp.js"></script>
+
+</html>

@@ -1,0 +1,62 @@
+body{
+	font-family: "微软雅黑" !important;
+}
+
+.transact_span{
+	padding: 30px 50px !important;
+	font-size: 50px;
+	font-family: "黑体";
+	text-align: center;
+	border-bottom: 1px solid #eee;
+}
+.icon_green{
+	padding: 30px 0px 0px 30px !important;
+}
+.transact_rule{
+	font-size: 35px;
+    padding-right: 30px !important;
+}
+.transact_green_span{
+	margin: 10px 0px 10px 40px;
+	border-left: 1px solid #52dcbe;
+	padding: 10px 0px 10px 0px;
+	display: block;
+}
+.transact_red_span{
+	margin: 10px 0px 10px 40px;
+	border-left: 1px solid #e45052;
+	padding: 10px 0px 10px 0px;
+	display: block;
+}
+.rule_span_span{
+	display: block;
+	background: #eee;
+    padding: 35px 50px 35px 20px;
+    margin-left: 45px;
+    position: relative;
+}
+.rule_span_span img{
+	position: absolute;
+    left: -19px;
+    bottom: 25px;
+}
+.icon_red{
+	padding: 0px 0px 0px 30px !important;
+} 
+.transact_red_time{
+    font-size: 32px;
+    color: #777;
+    padding: 0px 30px;
+    height: 52px;
+    display: block;
+    float: left;
+}  
+.transact_calculate{
+	font-size: 35px;
+    color: #e45052;
+    text-align: center;
+    margin-top: 50px;
+} 
+.transact_calculate p{
+	margin: 0px;
+} 

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="user-scalable=0" />
+	<!--阻止双击放大页面-->
+	<title>长租房源详情</title>
+</head>
+<link rel="stylesheet" href="../css/bootstrap.min.css" />
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/longrentpage.css" />
+<link rel="stylesheet" href="../css/longparticulars.css" />
+<link rel="stylesheet" href="../node_modules\vue-swipe\dist\vue-swipe.css">
+<link rel="stylesheet" href="../css/swipe.css">
+<!--长租首页css样式-->
+<script src="../js/api.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../js/vue/vue.js"></script>
+<script type="text/javascript" src="../js/vue/vue-resource.js"></script>
+<script src="http://webapi.amap.com/maps?v=1.3&key=0628edc330aaffeddfc2cba71352bcd5"></script>
+<script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+<script src="../node_modules\vue-swipe\dist\vue-swipe.js"></script>
+
+<body>
+	<div class="row" style="margin: 0px;" id="app">
+		<div class="col-xs-12 homepage-top ">
+			<div class="col-xs-6">
+				<div class="hp-top-left">
+					<img src="../img/waplogo.png" />
+				</div>
+			</div>
+			<div class="col-xs-6 hp-top-right">
+				<button>立即打开</button>
+				<span>
+					<img src="../img/delete.png" />
+				</span>
+			</div>
+		</div>
+		<!-- <div class="col-xs-12" style="margin-top: 120px;">
+			<div class="col-xs-4">
+
+			</div>
+			<div class="col-xs-4 navigation-center">
+				<img src="../img/homelogo.png" />
+			</div>
+			<div class="col-xs-4 navigation-right">
+				<a href="../searchpage.html">
+					<img src="../img/search.png" />
+				</a>
+			</div>
+		</div> -->
+		<swipe class="my-swipe" v-bind:speed="800">
+			<swipe-item class="slide1" v-for="imgItem in imgList">
+				<img v-bind:src="imgItem.imgUrl" alt="" @click="imgclick(imgItem)">
+			</swipe-item>
+		</swipe>
+		<div class="col-xs-12" style="padding: 10px 15px;">
+			<div class="col-xs-6 long-prices">
+				<span class="collect-prices">¥
+					<span style="font-size: 65px;">{{carouseldata.prices}}</span>/月</span>
+			</div>
+			<div class="col-xs-6 long-pay">
+				<span class="pay_mode" @click="texthouseId()">付款方式</span>
+				<span>
+					<img src="../img/pay.png" />
+				</span>
+			</div>
+			<div class="col-xs-12">
+				<span class="long-title">{{carouseldata.title}}</span>
+				<span class="houselist-span1" v-show="tagsitem!=''" v-for="tagsitem in tags">{{tagsitem}}</span>
+			</div>
+
+		</div>
+		<div class="col-xs-12  long-rooms">
+			<div class="col-xs-3">
+				<span>
+					<img src="../img/rooms.png" />
+				</span>
+				<span v-if="carouseldata.longJoinRent==1">单间出租 </span>
+				<span v-if="carouseldata.longHouseRent==1">整套出租</span>
+				<span class="line"></span>
+			</div>
+			<div class="col-xs-3">
+				<span>
+					<img src="../img/hall.png" />
+				</span>
+				<span>{{carouseldata.room}}室{{carouseldata.hall}}厅{{carouseldata.toilet}}卫</span>
+				<span class="line"></span>
+			</div>
+			<div class="col-xs-3">
+				<span>
+					<img src="../img/livable.png" />
+				</span>
+				<span>宜居{{carouseldata.personNumber}}人</span>
+				<span class="line"></span>
+			</div>
+			<div class="col-xs-3">
+				<span>
+					<img src="../img/square.png" />
+				</span>
+				<span>{{carouseldata.centiare}}m²</span>
+			</div>
+		</div>
+		<div class="col-xs-12 long-adress">
+			<span class="long-houseadress">房源位置</span>
+			<span>
+				<span>
+					<img src="../img/ditu.png" style="padding: 0px 17px 0px 0px;" />{{carouseldata.cityName}}{{carouseldata.areaName}}{{carouseldata.address}}</span>
+			</span>
+		</div>
+		<div class="col-xs-12 long-map">
+			<span class="long-map-span">
+				<div id="container" style="width: 100%;height: 100%;"></div>
+			</span>
+		</div>
+		<div class="col-xs-12 long-adress" style="border-bottom: 1px solid #d4d4d4;">
+			<span class="long-houseadress">房源描述</span>
+			<span>
+				<span style="color: #7d7d7d" class="readmore" id="readmore">
+					{{carouseldata.houseDesc}}
+				</span>
+			</span>
+			<span class="long-more More" onclick="more()">阅读更多</span>
+			<span class="long-more Packup" style="display: none;" onclick="packup()">点击收起</span>
+		</div>
+		<div class="long-adress">
+			<span class="long-houseadress">配套设施</span>
+		</div>
+		<div class="col-xs-12 long-adress amenities" style="border-bottom: 1px solid #d4d4d4;">
+			<div class="long-label" v-for=" amenityIditem in amenityId">
+				<span>
+					<img v-if="amenityIditem.grayIcon==' '" src="../img/headportrait.png" />
+					<img v-if="amenityIditem.grayIcon!=' '" v-bind:src="amenityIditem.grayIcon" />
+				</span>
+				<span>{{amenityIditem.amenityName}}</span>
+			</div>
+		</div>
+		<div class="col-xs-12 long-adress" style="border-bottom: 1px solid #d4d4d4;">
+			<div class="col-xs-6 long-prices">
+				<span class="long-houseadress">平台保障</span>
+			</div>
+			<div class="col-xs-6 long-report">
+				<span>
+					<img src="../img/report.png" />
+				</span>
+				<span>举报</span>
+			</div>
+			<div class="col-xs-4 safeguard">
+				<div class="col-xs-5" style="line-height: 105px">
+					<img src="../img/reality.png" />
+				</div>
+				<div class="col-xs-7" style="line-height: 52.5px">
+					<p>真实房源</p>
+					<p>人工审核</p>
+				</div>
+			</div>
+			<div class="col-xs-4 safeguard">
+				<div class="col-xs-5" style="line-height: 105px">
+					<img src="../img/creditable.png" />
+				</div>
+				<div class="col-xs-7" style="line-height: 52.5px">
+					<p>房东实名</p>
+					<p>更加可靠</p>
+				</div>
+			</div>
+			<div class="col-xs-4 safeguard">
+				<div class="col-xs-5" style="line-height: 105px">
+					<img src="../img/safeguard.png" />
+				</div>
+				<div class="col-xs-7" style="line-height: 52.5px">
+					<p>在线支付</p>
+					<p>方便快捷</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 long-adress" v-if="carouseldata.longJoinRent==='1'" style="padding-bottom: 0px">
+			<div class="col-xs-6 long-prices">
+				<span class="long-houseadress">室友信息</span>
+			</div>
+		</div>
+		<div v-if="carouseldata.houseId==houseItem.houseId" class="col-xs-12 long-chum" v-for="houseItem in houseList">
+			<div class="col-xs-3">
+				<span>{{houseItem.joinRentId}}室</span>
+			</div>
+			<div class="col-xs-3">
+				<span style="color:#e25051">{{houseItem.prices}}元/月</span>
+			</div>
+			<div class="col-xs-3">
+				<span style="color: #a4a4a4;">待入住</span>
+			</div>
+			<div class="col-xs-3">
+				<span style="color: #a4a4a4;">当前房源</span>
+			</div>
+		</div>
+		<div v-if="carouseldata.houseId!=houseItem.houseId" class="col-xs-12 long-chum" v-for="houseItem in houseList">
+			<div class="col-xs-3">
+				<span>{{houseItem.joinRentId}}室</span>
+			</div>
+			<div class="col-xs-3">
+				<span v-if="houseItem.status==0 || houseItem.status==1" style="color:#e25051">{{houseItem.prices}}元/月</span>
+				<span v-if="houseItem.status==5" style="color: #a4a4a4;">{{houseItem.centiare}}m²</span>
+			</div>
+			<div class="col-xs-3">
+				<span v-if="houseItem.status==0 || houseItem.status==1">待入住</span>
+				<span v-if="houseItem.status==5">{{houseItem.occupation}}</span>
+			</div>
+			<div class="col-xs-3">
+				<span v-if="houseItem.status==0 || houseItem.status==1">查看房源
+					<img src="../img/blackmore.png" style="margin-left: 20px;" />
+				</span>
+				<span v-if="houseItem.status==5" style="color: #a4a4a4;">已出租</span>
+			</div>
+		</div>
+		<div class="col-xs-12 installment">
+			<span>0元入住，申请分期通!
+				<img src="../img/installment.png" style="margin-left: 70px;" />
+			</span>
+			<span style="float: right">
+				<img src="../img/blackmore1.png" />
+			</span>
+
+		</div>
+		<div class="col-xs-12 installment">
+			<span class="headportrait">
+				<img v-bind:src="carouseldata.houseMastartImgUrl" />
+			</span>
+			<p style="margin-top: 25px;">{{carouseldata.nick}}</p>
+			<p class="certification">工商认证</p>
+			<!--<span style="position: absolute;top: 100px;right: 30px;">
+					<img src="../img/blackmore2.png" />
+				</span>-->
+
+		</div>
+		<div class="col-xs-12 long-adress" style="padding-bottom: 0px" v-show="otherList">
+			<div class="col-xs-6 long-prices">
+				<span class="long-houseadress">推荐房源</span>
+			</div>
+		</div>
+		<div class="col-xs-12 Dailyrent" style="margin-bottom: 117px;">
+			<div class="wrapper">
+				<div class="swiper-container">
+					<ul class="swiper-wrapper">
+						<li class="swiper-slide" v-for="other in otherList" @click="getHouse(other)">
+							<span>
+								<img v-bind:src="other.imgUrl" />
+							</span>
+							<span class="Dailyrent-price">¥
+								<span style="font-size: 55px;display: initial;">{{other.prices}}</span>/月</span>
+							<span class="Dailyrent-title">
+								{{other.title}}
+							</span>
+							<span class="information">
+								<span v-if="other.longJoinRent==1">单间出租</span>
+								<span v-if="other.longHouseRent==1">整间出租 | </span>
+								<span>{{other.room}}室</span>
+								<span>{{other.hall}}厅</span>
+								<span>{{other.toilet}}卫 | 宜居</span>
+								<span>{{other.personNumber}}人 |</span>
+								<span>{{other.centiare}}m²</span>
+							</span>
+							<span class="live-action">
+								<span>{{other.tags.replace(/,/g, " | ")}}</span>
+							</span>
+						</li>
+						<div style="clear: both;"></div>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 contact" onclick="document.location.href= '../else/download.html'">
+			<div class="col-xs-6 contact-left">
+				<img src="../img/photo.png" />联系房东</div>
+			<div class="col-xs-6 contact-right">
+				<img src="../img/subscribe.png" />预约看房</div>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+
+	function more() {
+		$('#readmore').removeClass("readmore");
+		$('.More').hide();
+		$('.Packup').show();
+	}
+	function packup() {
+		$('#readmore').addClass("readmore");
+		$('.More').show();
+		$('.Packup').hide();
+	}
+	function GetQueryString(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) return unescape(r[2]); return null;
+	}
+	var houseid = GetQueryString("houseId");
+	var lng = GetQueryString("lng");
+	var lat = GetQueryString("lat");
+	var data = {
+		houseId: houseid,
+		source: 'web',
+		lat: '0',
+		lng: '0',
+		// houseType: "2"
+	};
+	var data2 = {
+		cityId: "500100",
+		source: "web",
+		houseType: "1"
+	}
+
+	var vueSwipe = VueSwipe.Swipe;
+	var vueSwipeItem = VueSwipe.SwipeItem  //引入轮播插件
+	var demo = new Vue({
+		el: '#app',
+		data: {
+			imgList: [],
+			carouseldata: [],
+			tags: [],
+			amenityId: [],
+			houseList: [],
+			otherList: null,
+			// url: 'http://192.168.1.43:8070/v3/house/getInfo'
+			url: 'https://apis.zhudd.com/v3/house/getInfo'
+		},
+		created: function () {
+			this.getImg(); //定义方法
+			this.getOther()
+		},
+		methods: {
+			getOther: function () {
+				this.$http.jsonp({
+					data: data2,
+					method: "POST",
+					url: url.getRecommend,
+					emulateJSON: true
+				}).then(function (res) {
+					demo.otherList = res.data.result.houseList
+					console.log(res.data.result.houseList)
+				})
+			},
+			getHouse: function (other) {
+				console.log(other.houseId);
+				location.href = 'Longrent/longparticulars.html?' + 'houseId=' + encodeURI(other.houseId)
+					+ '&lng=' + encodeURI(other.lng) + '&lat=' + encodeURI(other.lat);
+			},
+			getImg: function () {
+				var that = this;
+				that.$http.jsonp({ //调用接口
+					data: data,
+					method: 'POST',
+					url: this.url, //this指data
+					emulateJSON: true,
+				}).then(function (response) { //接口返回数据
+					carouseldata = response.data.result;
+					//							columndata = response.data.result.column;
+					imgList = carouseldata.houseImgUrlList;
+					tags = carouseldata.tags.split(',')
+					amenityId = carouseldata.amenityIdList
+					houseList = carouseldata.houseList
+					demo.carouseldata = carouseldata;
+					//房源图片
+					demo.imgList = imgList;
+					//特色标签
+					demo.tags = tags;
+					//配套设施
+					demo.amenityId = amenityId;
+					//室友信息
+					demo.houseList = houseList;
+					console.log(JSON.stringify(imgList))
+					$(".homepage-top").next().css("margin-top", 120)
+					$(".homepage-top .hp-top-right span").on("click", function () {
+						$(".homepage-top").css("display", "none")
+						$(".homepage-top").next().css("margin-top", 0)
+					})
+				}, function (error) {
+
+				})
+			},
+			texthouseId: function () {
+				location.href = 'payment.html?' + 'houseId=' + encodeURI(houseid);
+			}
+		},
+		components: {
+			'swipe': vueSwipe,
+			'swipe-item': vueSwipeItem
+		}
+	})
+	//定位
+	var marker, map = new AMap.Map("container", {
+		resizeEnable: true,
+		center: [lng, lat],
+		zoom: 13
+	});
+	addMarker();
+	// 实例化点标记
+	function addMarker() {
+		if (marker) {
+			return;
+		}
+		marker = new AMap.Marker({
+			icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+			position: [lng, lat]
+		});
+		marker.setMap(map);
+	}
+</script>
+<script src="../js/downApp.js"></script>
+
+</html>

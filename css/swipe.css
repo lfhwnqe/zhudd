@@ -1,0 +1,24 @@
+.my-swipe {
+    /* height: 616px; */
+    color: #fff;
+    font-size: 30px;
+    text-align: center;
+    position: relative;
+    width: 100vw;
+}
+
+.my-swipe img {
+    width: 100%;
+    min-height: 616px;
+}
+/* .slide1 {
+    height: 616px;
+} */
+
+.slide1 {
+    background-color: #0089dc;
+    color: #fff;
+}
+.mint-swipe-items-wrap {
+    height: 616px;
+}

@@ -1,0 +1,47 @@
+body{
+	margin: 0;
+	padding: 0;
+    font-family: "微软雅黑";
+    position: relative;
+    width: 100vw;
+ 
+}
+a:link {color:#000;}/* 未被访问的链接 */
+
+a:visited {color:#000;}/* 已被访问的链接 */
+
+a:hover {color:#000;}/* 鼠标指针移动到链接上 */
+
+a:active {color:#000; text-decoration: none;}/* 正在被点击的链接 */
+
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+.home{
+    position: relative;
+    overflow: hidden;
+}
+.home img{
+    width: 100vw;
+    height: 92vh;
+}
+.nav{
+    position: absolute;
+    bottom: 0;
+}
+.nav div{
+    text-align: center;
+    float: left;
+    line-height: 8vh;
+    width: 50vw;
+    color: #111;
+}
+.nav .push {
+    background: rgb(228 ,80 ,82);
+    color: #fff;
+}

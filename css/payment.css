@@ -1,0 +1,52 @@
+.payment_span{
+	display: block;
+	padding: 30px 20px;
+	font-size: 50px;
+	font-family: "黑体";
+}
+.paymonthly{
+	padding: 0px 20px;
+	font-size: 50px;
+	font-family: "黑体";
+	float: left;
+}
+.paymonthly_price{
+	padding: 0px 20px;
+	font-size: 50px;
+	font-family: "黑体";
+	float: right;
+}
+.monthly_money{
+	padding: 30px 40px 50px 40px !important;
+    font-size: 38px;
+    font-family: "黑体";
+    color: #a4a4a4;
+    border-bottom: 1px solid #eeeeee;
+    margin-bottom: 50px;
+}
+.mon_money{
+	margin-right: 50px;
+}
+.payment_share{
+	font-size: 45px;
+    font-family: 黑体;
+    padding-left: 20px;
+    margin-right: 20px;
+    background: url(../img/blackmore1.png) no-repeat right;
+    display: block;
+}
+.instruction{
+	font-size: 45px;
+    font-family: 黑体;
+    padding-left: 20px;
+    margin-top: 50px;
+    display: block;
+    margin-bottom: 20px;
+    
+}
+.instruction_content{
+    font-size: 38px;
+    font-family: "黑体";
+    color: #a4a4a4;
+    padding-left: 20px;
+    }

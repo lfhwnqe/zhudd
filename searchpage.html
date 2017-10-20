@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="user-scalable=0" />
+	<!--阻止双击放大页面-->
+	<title>搜索页</title>
+</head>
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/searchpage.css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+<body>
+	<div class="row" style="margin: 0px;">
+		<div class="col-xs-12 homepage-top ">
+			<div class="col-xs-6">
+				<div class="hp-top-left">
+					<img src="img/waplogo.png" />
+				</div>
+			</div>
+			<div class="col-xs-6 hp-top-right">
+				<button>立即打开</button>
+				<span>
+					<img src="img/delete.png" />
+				</span>
+			</div>
+		</div>
+		<div class="col-xs-12" style="margin-top: 140px;border-bottom: 1px solid #eeecec;">
+			<div class="col-xs-10">
+				<div class="sp-adress">
+					<div class="selects">
+						<div class="selects_head">
+							<span class='selected'>日租</span>
+						</div>
+						<div class="selects_other">
+							<span>日租</span>
+							<span>长租</span>
+							<!-- <span>时租</span> -->
+						</div>
+					</div>
+					<span style="text-align: center;">
+						<img class="asas" src="img/search1.png" />
+					</span>
+					<form action="" onsubmit="return false;">
+						<input id="search-val" type="search" placeholder="目的地/商圈" />
+					</form>
+					<div style="clear: both;"></div>
+				</div>
+			</div>
+			<div class="col-xs-2 cancel">
+				<span onclick="self.location=document.referrer;">取消</span>
+			</div>
+		</div>
+
+		<div class="col-xs-12 hotsearch">
+			<span>热搜</span>
+		</div>
+		<div class="col-xs-12 hotsearch-content">
+			<span class="mynear">我的附近</span>
+		</div>
+		<div class="col-xs-12 hotsearch">
+			<span>搜索历史</span>
+			<div style="float:right ;">
+				<span class="seemore history" id="his-dele">
+					<img src="img/icon_delete.png" />
+				</span>
+				<span class="seemore history1" id="his-dele1" style="display: none;">
+					<img src="img/icon_delete.png" />
+				</span>
+				<span class="seemore history2" id="his-dele2" style="display: none;">
+					<img src="img/icon_delete.png" />
+				</span>
+			</div>
+
+		</div>
+		<div>
+			<div class="col-xs-12 hotsearch-content delete history">
+			</div>
+			<div class="col-xs-12 hotsearch-content delete1 history1" style="display: none;">
+			</div>
+			<div class="col-xs-12 hotsearch-content delete2 history2" style="display: none;">
+			</div>
+			<div style="clear: both;"></div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var hisItem = [];
+		var hisItem1 = [];
+		var hisItem2 = [];
+		init();
+		function init() {
+			hisItem = [];
+			hisItem1 = [];
+			hisItem2 = [];
+			if (localStorage.getItem("hisItemday") != null) {
+				var hisItemday = localStorage.getItem("hisItemday").split(',')
+				$(".delete").html("");
+				for (var i = 0; i < hisItemday.length; i++) {
+					$(".delete").prepend('<span class="historytab">' + hisItemday[i] + '</span>')
+				}
+				$('.historytab').on('click', function () {
+					var historytab = $(this).text()
+					location.href = 'Dailyrent/dailyhousinglist.html?' + 'key=' + encodeURI(historytab)
+				})
+			}
+			if (localStorage.getItem("hisItemlong") != null) {
+				var hisItemlong = localStorage.getItem("hisItemlong").split(',')
+				$(".delete1").html("");
+				for (var i = 0; i < hisItemlong.length; i++) {
+					$(".delete1").prepend('<span class="historytab1">' + hisItemlong[i] + '</span>')
+				}
+				$('.historytab1').on('click', function () {
+					var historytab = $(this).text()
+					location.href = 'Longrent/longhousinglist.html?' + 'key=' + encodeURI(historytab)
+				})
+			}
+			if (localStorage.getItem("hisItemtime") != null) {
+				var hisItemtime = localStorage.getItem("hisItemtime").split(',')
+				$(".delete2").html("");
+				for (var i = 0; i < hisItemtime.length; i++) {
+					$(".delete2").prepend('<span class="historytab2">' + hisItemtime[i] + '</span>')
+				}
+				$('.historytab2').on('click', function () {
+					var historytab = $(this).text()
+					//							location.href='Dailyrent/dailyhousinglist.html?'+'key='+encodeURI(historytab)
+				})
+			}
+		}
+		function addval() {
+			var value = $("#search-val").val();
+			if (value == '') {
+				alert("你未输入搜索内容");
+				return false;
+			} else {
+				if (localStorage.getItem("hisItemday") == null) {
+					var hisItem = [];
+					if ($.inArray(value, hisItem) == -1) {
+						hisItem.push(value);
+						localStorage.setItem("hisItemday", hisItem)
+						var hisItemday = localStorage.getItem("hisItemday").split(',')
+						$(".delete").html("");
+						for (var i = 0; i < hisItemday.length; i++) {
+							$(".delete").prepend("<span class='historytab'>' + hisItemday[i] + '</span>")
+						}
+					} else {
+						alert($.inArray(value, hisItem));
+					}
+
+				} else {
+					var hisItem = localStorage.getItem("hisItemday").split(',')
+					if ($.inArray(value, hisItem) == -1) {
+						hisItem.push(value);
+						localStorage.setItem("hisItemday", hisItem)
+						var hisItemday = localStorage.getItem("hisItemday").split(',')
+						$(".delete").html("");
+						for (var i = 0; i < hisItemday.length; i++) {
+							$(".delete").prepend("<span class='historytab'>' + hisItemday[i] + '</span>")
+						}
+					} else {
+						var index = $.inArray(value, hisItem);
+						// console.log(hisItem[index]);
+						hisItem.splice(jQuery.inArray(hisItem[index], hisItem), 1);
+						$(".delete").html("");
+						hisItem.push(value);
+						localStorage.setItem("hisItemday", hisItem)
+						var hisItemday = localStorage.getItem("hisItemday").split(',')
+						for (var i = 0; i < hisItemday.length; i++) {
+							$(".delete").prepend("<span class='historytab'>' + hisItemday[i] + '</span>")
+						}
+					}
+
+				}
+				encodeURIComponent(value)
+				location.href = 'Dailyrent/dailyhousinglist.html?' + 'key=' + encodeURIComponent(value)
+			}
+		}
+		$('#search-val').bind('search', function () {
+			var thisval = $(".selected").html()
+			if (thisval == "日租") {
+
+				addval();
+			}
+			else if (thisval == "长租") {
+				var value1 = $("#search-val").val();
+				if (value1 == '') {
+					alert("你未输入搜索内容");
+					return false;
+				} else {
+					if (localStorage.getItem("hisItemlong") == null) {
+						var hisItem1 = [];
+						hisItem1.push(value1);
+						localStorage.setItem("hisItemlong", hisItem1)
+						var hisItemlong = localStorage.getItem("hisItemlong").split(',')
+						$(".delete1").html("");
+						for (var i = 0; i < hisItemlong.length; i++) {
+							$(".delete1").prepend('<span>' + hisItemlong[i] + '</span>')
+						}
+					} else {
+						var hisItem1 = localStorage.getItem("hisItemlong").split(',')
+						if ($.inArray(value1, hisItem1) == -1) {
+							hisItem1.push(value1);
+							localStorage.setItem("hisItemlong", hisItem1)
+							var hisItemlong = localStorage.getItem("hisItemlong").split(',')
+							$(".delete1").html("");
+							for (var i = 0; i < hisItemlong.length; i++) {
+								$(".delete1").prepend('<span>' + hisItemlong[i] + '</span>')
+							}
+						} else {
+							var index = $.inArray(value1, hisItem1);
+							hisItem1.splice(jQuery.inArray(hisItem1[index], hisItem1), 1);
+							$(".delete1").html("");
+							hisItem1.push(value1);
+							localStorage.setItem("hisItemlong", hisItem1)
+							var hisItemlong = localStorage.getItem("hisItemlong").split(',')
+							for (var i = 0; i < hisItemlong.length; i++) {
+								$(".delete1").prepend('<span>' + hisItemlong[i] + '</span>')
+							}
+						}
+
+					}
+					location.href = 'Longrent/longhousinglist.html?' + 'key=' + encodeURI(value1)
+				}
+			}
+			else if (thisval == "时租") {
+				var value2 = $("#search-val").val();
+				if (value2 == '') {
+					alert("你未输入搜索内容");
+					return false;
+				} else {
+					if (localStorage.getItem("hisItemtime") == null) {
+						var hisItem2 = [];
+						hisItem2.push(value2);
+						localStorage.setItem("hisItemtime", hisItem2)
+						var hisItemtime = localStorage.getItem("hisItemtime").split(',')
+						$(".delete1").html("");
+						for (var i = 0; i < hisItemtime.length; i++) {
+							$(".delete1").prepend('<span>' + hisItemtime[i] + '</span>')
+						}
+					} else {
+						var hisItem2 = localStorage.getItem("hisItemtime").split(',')
+						if ($.inArray(value2, hisItem2) == -1) {
+							hisItem2.push(value2);
+							localStorage.setItem("hisItemtime", hisItem2)
+							var hisItemtime = localStorage.getItem("hisItemtime").split(',')
+							$(".delete2").html("");
+							for (var i = 0; i < hisItemtime.length; i++) {
+								$(".delete2").prepend('<span>' + hisItemtime[i] + '</span>')
+							}
+						} else {
+							var index = $.inArray(value2, hisItem2);
+							hisItem2.splice(jQuery.inArray(hisItem2[index], hisItem2), 1);
+							$(".delete2").html("");
+							hisItem2.push(value2);
+							localStorage.setItem("hisItemtime", hisItem2)
+							var hisItemtime = localStorage.getItem("hisItemtime").split(',')
+							for (var i = 0; i < hisItemtime.length; i++) {
+								$(".delete2").prepend('<span>' + hisItemtime[i] + '</span>')
+							}
+						}
+						location.href = 'Dailyrent/dailyhousinglist.html?' + 'key=' + encodeURI(value2)
+					}
+				}
+			}
+		});
+		//删除历史
+		$("#his-dele").click(function () {
+			$(".delete").html("");
+			localStorage.removeItem('hisItemday');
+		});
+		$("#his-dele1").click(function () {
+			$(".delete1").html("");
+			localStorage.removeItem('hisItemlong');
+		});
+		$("#his-dele2").click(function () {
+			$(".delete2").html("");
+			localStorage.removeItem('hisItemtime');
+		});
+		//下拉点击 
+		$(".selects_other").children("span").click(function () {
+			$(this).parents('.selects').find(".selected").text($(this).html());
+			$(".selects_other").hide();
+			if ($(this).html() == "日租") {
+				$("#search-val").val(" ");
+				$(".delete").show();
+				$(".delete").siblings().hide();
+				$(".history").show();
+				$(".history").siblings().hide();
+			} if ($(this).html() == "长租") {
+				$("#search-val").val(" ");
+				$(".delete1").show();
+				$(".delete1").siblings().hide();
+				$(".history1").show();
+				$(".history1").siblings().hide();
+			} if ($(this).html() == "时租") {
+				$("#search-val").val(" ");
+				$(".delete2").show();
+				$(".delete2").siblings().hide();
+				$(".history2").show();
+				$(".history2").siblings().hide();
+			}
+		})
+		//头部点击 显示或隐藏下拉，并切换箭头图片 
+		$(".selects_head").click(function () {
+			if ($(this).parent().children(".selects_other").css("display") == 'none') {
+				$(this).parent().children(".selects_other").show();
+			} else {
+				$(this).parent().children(".selects_other").hide();
+			}
+		})
+		$(document).click(function () {
+			$(".selects_other").hide();
+		});
+		$(".selects_head").click(function (event) {
+			event.stopPropagation();
+		});
+		$('.mynear').on('click', function () {
+			var thisvalue = $(this).text();
+			var selected = $('.selected').text();
+			if (selected == "日租") {
+				location.href = 'Dailyrent/dailyhousinglist.html?' + 'key=' + encodeURI(thisvalue)
+			} else if (selected == "长租") {
+				location.href = 'Longrent/longhousinglist.html?' + 'key=' + encodeURI(thisvalue)
+			} else if (selected == "时租") {
+
+			}
+		})
+
+
+
+		$(".homepage-top .hp-top-right span").on("click", function () {
+			$(".homepage-top").css("display", "none")
+			$(".homepage-top").next().css("margin-top", 10)
+		})
+	</script>
+	<script src="../js/downApp.js"></script>
+</body>
+
+</html>

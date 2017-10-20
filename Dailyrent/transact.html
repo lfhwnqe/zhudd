@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="user-scalable=0" />
+	<title>交易规则</title>
+	<link rel="stylesheet" href="../css/style.css" />
+	<link rel="stylesheet" href="../css/transact.css" />
+	<!--交易规则-->
+	<link rel="stylesheet" href="../css/bootstrap.min.css" />
+	<script type="text/javascript" src="../js/jquery.min.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../js/vue/vue.js"></script>
+	<script type="text/javascript" src="../js/vue/vue-resource.js"></script>
+</head>
+
+<body>
+	<div class="row" style="margin: 0px;" id="app">
+		<div class="col-xs-12 homepage-top ">
+			<div class="col-xs-6">
+				<div class="hp-top-left">
+					<img src="../img/waplogo.png" />
+				</div>
+			</div>
+			<div class="col-xs-6 hp-top-right">
+				<button>立即打开</button>
+				<span>
+					<img src="../img/delete.png" />
+				</span>
+			</div>
+		</div>
+		<div class="col-xs-12 transact_span">
+			<span style="float: left;">
+				<img src="../img/blackmore3.png" onclick="self.location=document.referrer;" />
+			</span>
+			<span>交易规则</span>
+		</div>
+		<div class="col-xs-12 icon_green">
+			<span>
+				<img src="../img/icon_green_bell@3x.png">
+			</span>
+		</div>
+		<div class="col-xs-12 transact_rule">
+			<span class="transact_green_span">
+				<span class="rule_span_span">
+					<p>入住前{{carouseldata.sum_refunddays}}天的14:00以前取消订单，订金全部退还</p>
+					<img src="../img/arrow.png" />
+				</span>
+			</span>
+		</div>
+		<div class="col-xs-12 icon_red">
+			<span style="float: left;">
+				<img src="../img/icon_red_bell@3x.png">
+			</span>
+			<span class="transact_red_time">入住前{{carouseldata.sum_refunddays}}天14:00</span>
+		</div>
+		<div class="col-xs-12 transact_rule">
+			<span class="transact_red_span">
+				<span class="rule_span_span">
+					<p>入住前1天的14:00到入住当天的14:00之间取消订单，扣除前{{carouseldata.default_chargedays}}天的订金</p>
+					<img src="../img/arrow.png" />
+				</span>
+			</span>
+		</div>
+		<div class="col-xs-12 icon_red">
+			<span style="float: left;">
+				<img src="../img/icon_red_bell@3x.png">
+			</span>
+			<span class="transact_red_time">入住当天14:00</span>
+		</div>
+		<div class="col-xs-12 transact_rule">
+			<span class="transact_red_span">
+				<span class="rule_span_span">
+					<p>入住当天的14:00之后提前退房，扣除未消费的前 {{carouseldata.default_chargedays}}天的订金，订金不足以实际订金为准。(包括未入住和提前退房两种情况)</p>
+					<img src="../img/arrow.png" />
+				</span>
+			</span>
+		</div>
+		<div class="col-xs-12 icon_red">
+			<span style="float: left;">
+				<img src="../img/icon_gray_bell@3x.png">
+			</span>
+			<span class="transact_red_time">退房当天12:00</span>
+		</div>
+		<div class="col-xs-12 transact_calculate">
+			<p>日均订金：订房总金额÷订房总天数，(包括订房期</p>
+			<p>间的周价/月价/特殊价/节假价的日平均价格)</p>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	function GetQueryString(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) return unescape(r[2]); return null;
+	}
+	var houseid = GetQueryString("houseId");
+	var data = {
+		houseId: houseid,
+		source: 'web',
+		lat: '0',
+		lng: '0'
+	};
+	var demo = new Vue({
+		el: '#app',
+		data: {
+			carouseldata: [],
+			url: 'https://apis.zhudd.com/v3/house/getInfo'
+		},
+		created: function () {
+			this.getImg(); //定义方法
+		},
+		methods: {
+			getImg: function () {
+				var that = this;
+				that.$http.jsonp({ //调用接口
+					data: data,
+					method: 'POST',
+					url: this.url, //this指data
+					emulateJSON: true,
+				}).then(function (response) { //接口返回数据
+					carouseldata = response.data.result;
+					demo.carouseldata = carouseldata;
+					$(".homepage-top").next().css("margin-top", 120)
+					$(".homepage-top .hp-top-right span").on("click", function () {
+						$(".homepage-top").css("display", "none")
+						$(".homepage-top").next().css("margin-top", 0)
+					})
+				}, function (error) {
+
+				})
+			}
+		}
+	})
+</script>
+<script src="../js/downApp.js"></script>
+
+</html>

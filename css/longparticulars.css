@@ -1,0 +1,191 @@
+.discount{
+	display: block;
+    width: 100%;
+    height: 100px;
+    font-size: 40px;
+    color: #fff;
+    background: #00b1f3;
+    line-height: 100px;
+    padding: 0px 40px;
+    position: absolute;
+    bottom: -4px;
+}
+.long-pay{
+	text-align: right;
+    font-size: 40px;
+    height: 110px;
+    line-height: 110px;
+    color: #7d7d7d;
+} 
+.long-prices{
+	/*text-align: right;*/
+    font-size: 40px;
+    height: 110px;
+    line-height: 110px;
+    padding: 0px;
+} 
+.long-pay span:first-child{
+	margin-right: 20px;
+}    
+.long-title{
+	font-size: 45px;
+	display: block;
+	margin-bottom: 25px;
+}
+.long-rooms{
+	text-align: center;
+	font-size: 40px;
+    padding: 20px 0px 50px 0px;
+    border-bottom: 1px solid #d4d4d4;
+    border-top: 1px solid #d4d4d4;
+}
+.long-rooms span{
+	display: block;
+	padding: 30px 0px 0px 0px;
+}
+.long-adress{
+	font-size: 2em;
+    padding: 40px 30px;
+}
+.amenities {
+    display: flex;
+    flex-wrap: wrap;
+}
+.long-adress span{
+	display: block;
+	line-height: 60px;
+}
+.long-houseadress{
+	font-size: 45px;
+	line-height: 100px !important;
+}
+#readmore {
+    font-size: 1.5em;
+}
+.long-map{
+	padding: 0px 0px 70px 0px;
+    border-bottom: 1px solid #d4d4d4;
+}
+.long-more{
+	color: #e25051;
+    border: 2px solid #e25051;
+    border-radius: 5px;
+    width: 204px;
+    height: 75px;
+    line-height: 75px !important;
+    margin: auto;
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 50px;
+}
+.long-label{
+	/*display: initial !important;*/
+	width: 20%;
+	/* float: left; */
+	text-align: center;
+	/* margin-bottom: 30px; */
+} 
+.long-label span{
+	/*display: initial !important;*/
+	width: 100%;
+	line-height: 80px;
+} 
+/*.long-label img{
+	background: url(../img/icon_load.png) no-repeat;
+	width: 100%;
+} */
+.long-report{
+	text-align: right;
+	line-height: 110px;
+}
+.long-report span{
+	display: initial !important;
+}
+.safeguard div{
+	padding: 0px;
+	text-align: center;
+}
+.safeguard{
+	margin-top:15px ;
+	margin-bottom: 30px;
+}
+.safeguard p {
+    margin: 0;
+}
+.long-chum{
+	text-align: center;
+	border-bottom: 1px solid #d4d4d4;
+}
+.long-chum span{
+	line-height: 100px;
+    font-size: 40px;
+    
+}
+.installment{
+	font-size: 2.4em;
+    padding: 50px 30px;
+    border-bottom: 1px solid #d4d4d4;
+}
+.headportrait{
+	display: block;
+    width: 160px;
+    height: 160px;
+    border-radius: 80px;
+    overflow: hidden;
+    text-align: center;
+    float: left;
+    line-height: 146px;
+    background: url(../img/headportrait.png) no-repeat;
+}
+.headportrait img{
+	width: 100%;
+	height: 100%;
+}
+.installment p{
+    margin-left: 190px;
+} 
+.contact{
+	padding: 0px;
+	font-size: 45px;
+    text-align: center;
+    position: fixed;
+    bottom: 0px;
+}
+.contact-left{
+	background: #e25051;
+    color: #fff;
+    padding: 30px 0px;
+}     
+.contact-right{
+	background: #d34142;
+    color: #fff;
+    padding: 30px 0px;
+}  
+.contact img{
+	margin-right: 30px;
+}
+.line{
+	height: 70px;
+    border: 1px solid #e3e2e2;
+    position: absolute;
+    top: 77px;
+    right: 0px;
+}
+.certification{
+	color: #7d7d7d;
+} 
+.long-map-span{
+    width: 100%;
+    height: 272px;
+    display: block;
+    overflow: hidden;
+}
+.readmore{
+	display: -webkit-box !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    box-sizing: border-box;
+}
+

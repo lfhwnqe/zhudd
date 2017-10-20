@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="user-scalable=0" />
+    <!--阻止双击放大页面-->
+    <title>长租首页</title>
+</head>
+<link rel="stylesheet" href="../css/bootstrap.min.css" />
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/longrentpage.css" />
+<!--长租首页css样式-->
+<link rel="stylesheet" href="../css/range/jquery.range.css" />
+<!--价格选择条-->
+<link rel="stylesheet" href="../css/sly/normalize.css" />
+<!--宜居人数-->
+<link rel="stylesheet" href="../css/sly/font-awesome.css">
+<!--宜居人数-->
+<link rel="stylesheet" href="../css/sly/ospb.css">
+<!--宜居人数-->
+<link rel="stylesheet" href="../css/sly/horizontal.css" />
+<!--宜居人数-->
+<script type="text/javascript" src="../js/sly/modernizr.js"></script>
+<!--宜居人数-->
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../js/xSlider.js"></script>
+<!--轮播-->
+<script type="text/javascript" src="../js/vue/vue.js"></script>
+<script type="text/javascript" src="../js/vue/vue-resource.js"></script>
+<script type="text/javascript" src="../js/range/jquery.range.js"></script>
+<!--价格选择条-->
+<script src="../js/api.js"></script>
+
+<body class="body">
+    <div id="longrentpage">
+        <div class="row" style="margin: 0px;" id="app">
+            <div class="col-xs-12 homepage-top ">
+                <div class="col-xs-6">
+                    <div class="hp-top-left">
+                        <img src="../img/waplogo.png" />
+                    </div>
+                </div>
+                <div class="col-xs-6 hp-top-right">
+                    <button>立即打开</button>
+                    <span>
+                        <img src="../img/delete.png" />
+                    </span>
+                </div>
+            </div>
+            <div class="col-xs-12" style="margin-top: 120px;">
+                <div class="col-xs-4">
+
+                </div>
+                <div class="col-xs-4 navigation-center">
+                    <img src="../img/homelogo.png" />
+                </div>
+                <div class="col-xs-4 navigation-right">
+                    <a href="../searchpage.html">
+                        <img src="../img/search.png" />
+                    </a>
+                </div>
+            </div>
+            <div class="col-xs-12 hp-banner ">
+                <div id="myCarousel" class="carousel slide">
+                    <!-- 轮播（Carousel）项目 -->
+                    <div class="carousel-inner lunbo">
+                        <div class="item" v-bind:class="{'active':!key}" v-for="(imgItem,key) in imgList" @click="imgclick(imgItem)">
+                            <img v-bind:src="imgItem.imgUrl">
+                        </div>
+                    </div>
+                    <!-- 轮播（Carousel）导航 -->
+                    <a class="carousel-control left" href="#myCarousel" data-slide="prev"></a>
+                    <a class="carousel-control right" href="#myCarousel" data-slide="next"></a>
+                </div>
+            </div>
+            <div class="col-xs-12 options drpage-options">
+                <div>
+                    <div class="col-xs-4" v-for="columnItem in columnlist" @click="test1(columnItem)">
+                        <span class="options-span">
+                            <img v-bind:src="columnItem.imgUrl" />
+                        </span>
+                        <span>{{columnItem.title}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 screening" id="float">
+                <div class="col-xs-4" id="btnFadein">
+                    <span>
+                        <p>位置区域</p>
+                    </span>
+                </div>
+                <div class="col-xs-4" id="btnmore">
+                    <span>
+                        <p>更多筛选</p>
+                    </span>
+                </div>
+                <div class="col-xs-4" id="recommend">
+                    <span>
+                        <p>推荐排序</p>
+                    </span>
+                </div>
+            </div>
+
+        </div>
+        <div class="row" style="margin: 0px;" id="app1">
+            <div class="col-xs-12 houselist" v-for="resultItem in resultlist" @click="test(resultItem)">
+                <div class="col-xs-5">
+                    <img v-bind:src="resultItem.houseImgUrl" />
+                </div>
+                <div class="col-xs-7">
+                    <span class="houselist-span">{{resultItem.title}}</span>
+                    <span class="houselist-span">{{resultItem.room}}室{{resultItem.hall}}厅{{resultItem.toilet}}卫 / {{resultItem.centiare}}m²</span>
+                    <span class="houselist-span" style="margin-bottom: 20px;">
+                        <span>{{resultItem.route}}</span>
+                    </span>
+                    <span class="houselist-span" style="overflow: hidden;">
+                        <span class="houselist-span1" v-if="resulttags !=''" v-for="resulttags in resultItem.tags.split(',')">{{resulttags}}</span>
+                        <span class="houselist-span1" v-if="resulttags ==''" v-for="resulttags in resultItem.tags.split(',')" style="display: none;">{{resulttags}}</span>
+                    </span>
+                    <span class="houselist-span2">￥{{resultItem.prices}}/月</span>
+                </div>
+            </div>
+            <div class="nextPage" @click="clickNextPage"></div>
+        </div>
+        <div class="col-xs-12" id="divD">
+            <div class="adr-filtrate">
+                <div class="col-xs-12" id="near">
+                    <span>
+                        <img src="../img/quyu6.png" />
+                    </span>
+                    <span>我的附近</span>
+                </div>
+            </div>
+            <div class="col-xs-12 cancel">
+                <span class="cancel_btn" id="cancel_btn">取消</span>
+                <span class="confirm_btn">确认</span>
+            </div>
+        </div>
+        <div class="col-xs-12" id="div_btnmore" style="display: block;opacity: 0;">
+            <div class="adr-filtrate adr-btnmore">
+                <div class="col-xs-12 " style="padding: 20px;">
+                    <span>价格</span>
+                </div>
+                <div class="col-xs-12" style="padding: 60px 0px;">
+                    <input class="range-slider" type="hidden" value="0,3000" />
+                </div>
+                <div class="col-xs-12 " style="padding: 20px;">
+                    <span>出租类型</span>
+                </div>
+                <div class="col-xs-12 leasetype">
+                    <div class="col-xs-6">
+                        <span class="zhengzu"></span>
+                        <span class="leasetype_span">整租</span>
+                    </div>
+                    <div class="col-xs-6">
+                        <span class="hezhu"></span>
+                        <span class="leasetype_span">合租</span>
+                    </div>
+                </div>
+                <div class="col-xs-12" style="padding: 20px;">
+                    <span>户型</span>
+                </div>
+                <div class="col-xs-12">
+                    <span class="familytype_span">
+                        <span class="roomvalue">一居</span>
+                    </span>
+                    <span class="familytype_span">
+                        <span class="roomvalue">二居</span>
+                    </span>
+                    <span class="familytype_span">
+                        <span class="roomvalue">三居</span>
+                    </span>
+                    <span class="familytype_span">
+                        <span class="roomvalue">四居</span>
+                    </span>
+                    <span class="familytype_span">
+                        <span class="roomvalue">不限</span>
+                    </span>
+                </div>
+                <div class="col-xs-12" style="padding: 20px;">
+                    <span>宜居人数</span>
+                </div>
+                <div class="col-xs-12" style="padding: 0px 30px;">
+                    <div class="pagespan container">
+                        <div class="wrap">
+                            <div class="frame" id="forcecentered">
+                                <ul class="clearfix">
+                                    <li>1人</li>
+                                    <li>2人</li>
+                                    <li>3人</li>
+                                    <li>4人</li>
+                                    <li>5人</li>
+                                    <li>6人</li>
+                                    <li>7人</li>
+                                    <li>8人</li>
+                                    <li>9人</li>
+                                    <li>10人</li>
+                                    <li>10人+</li>
+                                    <li>不限</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <span class="pagespan_line"></span>
+                    </div>
+                </div>
+                <div class="col-xs-12" style="padding: 20px;">
+                    <span>特色标签</span>
+                </div>
+                <div class="col-xs-12" style="padding: 0px 30px;" id="applabel">
+                    <span v-for="(labelItem, index) in labellist">
+                        <span @click="labelspan(labelItem, index)" :class="{'label_span': true,'select': items[index].isSelect}">{{labelItem.content}}</span>
+                    </span>
+                </div>
+                <div class="col-xs-12" style="padding: 20px;">
+                    <span>设施</span>
+                </div>
+                <div class="col-xs-12" id="appfacilities">
+                    <span class="facilities_span" v-for="(facilitiesItem, i) in facilitieslist" @click="textfacilities(facilitiesItem, i)">
+                        <span class="facilities">
+                            <img :src="icons[i]?facilitiesItem.grayIcon: facilitiesItem.redIcon" style="margin: 0px;" />
+                        </span>
+                        <span class="leasetype_span" :class="{colorRed:!icons[i]}">{{facilitiesItem.amenityName}}</span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-xs-12 cancel">
+                <span class="cancel_btn" id="btnmore_btn">取消</span>
+                <span class="confirm_btn" id="confirm_btn">确认</span>
+            </div>
+        </div>
+        <div class="col-xs-12" id="div_recommend">
+            <div class="adr-filtrate recommend">
+                <div class="col-xs-12 recommend_div confirm">
+                    <span>推荐排序</span>
+                </div>
+                <div class="col-xs-12 recommend_div">
+                    <span>租金从高到低</span>
+                </div>
+                <div class="col-xs-12 recommend_div">
+                    <span>租金从低到高</span>
+                </div>
+            </div>
+            <div class="col-xs-12 cancel">
+                <span class="cancel_btn" id="recommend_btn">取消</span>
+                <span class="confirm_btn">确认</span>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../js/sly/plugins.js"></script>
+<!--宜居人数-->
+<script type="text/javascript" src="../js/sly/sly.min.js"></script>
+<!--宜居人数-->
+<script type="text/javascript" src="../js/sly/horizontal.js"></script>
+<!--宜居人数-->
+<script src="longrentpage.js"></script>
+
+</html>

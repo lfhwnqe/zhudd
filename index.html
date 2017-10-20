@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="user-scalable=0" />
+	<!--阻止双击放大页面-->
+	<!--<meta name="viewport" content="width=device-width, initial-scale=1" />-->
+	<meta name="full-screen" content="yes">
+	<title>主页</title>
+</head>
+
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="node_modules\vue-swipe\dist\vue-swipe.css" charset="utf-8">
+<link rel="stylesheet" href="css/swipe.css">
+<script src="https://cdn.staticfile.org/babel-polyfill/6.16.0/polyfill.min.js"></script>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script src="js/api.js"></script>
+<script type="text/javascript" src="js/vue/vue.js"></script>
+<script type="text/javascript" src="js/vue/vue-resource.js"></script>
+<script src="node_modules\vue-swipe\dist\vue-swipe.js"></script>
+
+<body>
+	<div id="app">
+		<div class="row" style="margin: 0px;">
+			<div class="col-xs-12 homepage-top ">
+				<div class="col-xs-6">
+					<div class="hp-top-left">
+						<img src="img/waplogo.png" />
+					</div>
+				</div>
+				<div class="col-xs-6 hp-top-right">
+					<button>立即打开</button>
+					<span>
+						<img src="img/delete.png" />
+					</span>
+				</div>
+			</div>
+			<swipe class="my-swipe" v-bind:speed="800">
+				<swipe-item class="slide1" v-for="imgItem in imgList">
+					<img v-bind:src="imgItem.imgUrl" alt="" @click="imgclick(imgItem)">
+				</swipe-item>
+			</swipe>
+			<div class="col-xs-12">
+				<div class="search-center">
+					<span>
+						<img src="img/search1.png" />
+					</span>
+					<input type="text" placeholder="住我喜欢" editable="false" onclick="window.location='searchpage.html'" />
+					<div style="clear: both;"></div>
+				</div>
+			</div>
+			<div class="col-xs-12 options">
+				<div class="optwidth" style="box-shadow: 0 9px 14px #cacbcc;height: 300px;">
+					<div class="col-xs-3" v-for="columnItem in columnlist" @click="test(columnItem)">
+						<span class="options-span">
+							<img v-bind:src="columnItem.imgUrl" />
+						</span>
+						<span>{{columnItem.title}}</span>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 handpick">
+				<span>精选专场</span>
+			</div>
+			<div class="col-xs-12 handpick-content">
+				<div class="col-xs-6" v-for="specialItem in speciallist" @click="specialimg(specialItem)">
+					<img v-bind:src="specialItem.imgUrl" style="margin-bottom: 30px;" />
+				</div>
+			</div>
+			<div class="col-xs-12 describe">
+				<img src="img/describe.png" />
+			</div>
+		</div>
+		<div class="row" style="margin: 0px;">
+			<div class="col-xs-12" v-for="resultItem in resultlist">
+				<div class="col-xs-12 handpick">
+					<span v-if="resultItem.houseType==1">长租</span>
+					<span v-if="resultItem.houseType==2">日租</span>
+					<span v-if="resultItem.houseType==3">时租</span>
+					<span class="seemore" v-on:click="btnSeemore">查看更多＞</span>
+				</div>
+				<div class="col-xs-12 Dailyrent" v-show="resultItem.houseType===2">
+					<div class="wrapper">
+						<div class="swiper-container">
+							<ul class="swiper-wrapper">
+								<li class="swiper-slide" v-for="houseItem in houseList" @click="getHouse(houseItem)">
+									<span>
+										<img v-bind:src="houseItem.imgUrl" />
+									</span>
+									<span class="Dailyrent-price">¥{{houseItem.prices}}/晚</span>
+									<span class="Dailyrent-title">
+										{{houseItem.title}}
+									</span>
+									<div class="information">
+										<span v-if="houseItem.roomRent===1" style="font-size:'32px'">人民单间 |</span>
+										<span v-if="houseItem.houseRent===1" style="font-size: '82px'">民宿套房 |</span>
+										<span v-if="houseItem.bedRental===1">青年床位 |</span>
+										<span>{{houseItem.room}}室{{houseItem.hall}}厅{{houseItem.toilet}}卫 | 宜居{{houseItem.personNumber}}人 | {{houseItem.centiare}}m²
+										</span>
+									</div>
+									<span class="live-action">
+										<span>{{houseItem.tags.replace(/,/g, " | ")}}</span>
+									</span>
+								</li>
+								<div style="clear: both;"></div>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-xs-12 Dailyrent" v-show="resultItem.houseType===1">
+					<div class="wrapper">
+						<div class="swiper-container">
+							<ul class="swiper-wrapper">
+								<li class="swiper-slide" v-for="houseItem1 in houseList1" @click="getHouse1(houseItem1)">
+									<span>
+										<img v-bind:src="(houseItem1.imgUrl + str)" />
+									</span>
+									<span class="Dailyrent-price">¥{{houseItem1.prices}}/月</span>
+									<span class="Dailyrent-title">
+										{{houseItem1.title}}
+									</span>
+									<div class="information">
+										<span v-if="houseItem1.longHouseRent===1">整租 |</span>
+										<span v-if="houseItem1.longJoinRent==1">合租 |</span>
+										<!-- <span v-if="houseItem1.bedRental==1">床位出租 |</span> -->
+										<span>{{houseItem1.room}}室{{houseItem1.hall}}厅{{houseItem1.toilet}}卫 </span>
+										<span>| 宜居</span>
+										<span>{{houseItem1.personNumber}}人 |</span>
+										<span>{{houseItem1.centiare}}m²</span>
+										<!--<span>{{houseItem1.room}}室{{houseItem1.hall}}厅{{houseItem1.toilet}}卫 | 宜居{{houseItem1.personNumber}}人 |{{houseItem1.centiare}}m²</span>-->
+									</div>
+									<div class="live-action">
+										<span>{{houseItem1.tags.replace(/,/g, " | ")}}</span>
+									</div>
+								</li>
+
+								<div style="clear: both;"></div>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-xs-12 Dailyrent" v-show="resultItem.houseType===3">
+					<div class="wrapper">
+						<div class="swiper-container">
+							<ul class="swiper-wrapper">
+								<li class="swiper-slide" v-for="houseItem in houseList">
+									<span>
+										<img v-bind:src="houseItem.imgUrl" />
+									</span>
+									<span class="Dailyrent-price">¥
+										<span style="font-size: 55px;display: initial;">{{houseItem.prices}}</span>/月</span>
+									<span class="Dailyrent-title">
+										{{houseItem.title}}
+									</span>
+									<span class="information">
+										<span v-if="houseItem.longJoinRent==1">单间出租</span>
+										<span v-if="houseItem.longHouseRent==1">整间出租 | </span>
+										<span>{{houseItem.room}}室</span>
+										<span>{{houseItem.hall}}厅</span>
+										<span>{{houseItem.toilet}}卫 | 宜居</span>
+										<span>{{houseItem.personNumber}}人 |</span>
+										<span>{{houseItem.centiare}}m²</span>
+									</span>
+									<span class="live-action">
+										<span>{{houseItem.tags.replace(/,/g, " | ")}}</span>
+									</span>
+								</li>
+								<div style="clear: both;"></div>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=0628edc330aaffeddfc2cba71352bcd5"></script>
+	<script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+	<script src="js/map.js"></script>
+	<script src="js/index.js"></script>
+	<script src="js/downApp.js"></script>
+</body>
+
+</html>

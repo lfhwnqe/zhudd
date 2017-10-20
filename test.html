@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="node_modules\vue-swipe\dist\vue-swipe.css" charset="utf-8">
+	<script type="text/javascript" src="js/vue/vue.js"></script>
+	<script src="node_modules\vue-swipe\dist\vue-swipe.js"></script>
+	<title>Document</title>
+	<style>
+		.my-swipe {
+			height: 200px;
+			color: #fff;
+			font-size: 30px;
+			text-align: center;
+		}
+
+		.slide1 {
+			background-color: #0089dc;
+			color: #fff;
+		}
+
+		.slide2 {
+			background-color: #ffd705;
+			color: #000;
+		}
+
+		.slide3 {
+			background-color: #ff2d4b;
+			color: #fff;
+		}
+	</style>
+</head>
+
+<body>
+	<swipe class="my-swipe">
+		<swipe-item class="slide1"></swipe-item>
+		<swipe-item class="slide2"></swipe-item>
+		<swipe-item class="slide3"></swipe-item>
+	</swipe>
+	<script>
+		var vueSwipe = VueSwipe.Swipe;
+		var vueSwipeItem = VueSwipe.SwipeItem;
+
+		var swipe = new Vue({
+			el: '.my-swipe',
+			components: {
+				'swipe': vueSwipe,
+				'swipe-item': vueSwipeItem
+			}
+		})
+	</script>
+</body>
+
+</html>
