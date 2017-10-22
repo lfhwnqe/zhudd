@@ -75,7 +75,7 @@
 }
 .height-float{
 	position:fixed;
-	/* top:119px; */
+	top:119px;
 	z-index: 100;
 }
 .area{
