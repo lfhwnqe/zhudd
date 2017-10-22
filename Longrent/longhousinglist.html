@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="../css/sly/ospb.css">
 <!--宜居人数-->
 <link rel="stylesheet" href="../css/sly/horizontal.css" />
+<link rel="stylesheet" href="../css/houselist.css">
 <!--宜居人数-->
 <script type="text/javascript" src="../js/sly/modernizr.js"></script>
 <!--宜居人数-->
@@ -550,12 +551,11 @@
                     columndata = response.data.result.column;
                     demo.imgList = carouseldata;
                     demo.columnlist = columndata;
-                    //                  	console.log(JSON.stringify(carouseldata))
-                    // console.log(columndata)
                     $(".homepage-top").next().css("margin-top", 120)
                     $(".homepage-top .hp-top-right span").on("click", function () {
                         $(".homepage-top").css("display", "none")
                         $(".homepage-top").next().css("margin-top", 0)
+                        $("#float").css("top", 0)
                     })
                 }, function (error) { })
 
